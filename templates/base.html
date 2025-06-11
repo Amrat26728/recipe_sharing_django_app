@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipe Sharing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Heroicons for menu icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.0.11/heroicons.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#FF6B00',
+              secondary: '#FF9500'
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+
+    {% block content %}{% endblock content %}
+
+  </body>
+</html>

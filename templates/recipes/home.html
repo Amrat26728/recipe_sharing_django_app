@@ -1,0 +1,386 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% include '.\navbar.html' %}
+
+  <style>
+    @keyframes float {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+    @keyframes float-reverse {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(20px);
+      }
+    }
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    .floating-reverse {
+      animation: float-reverse 7s ease-in-out infinite;
+    }
+    .floating-delay-1 {
+      animation-delay: 1s;
+    }
+    .floating-delay-2 {
+      animation-delay: 2s;
+    }
+    .hero-gradient {
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
+    }
+    .search-shadow {
+      box-shadow: 0 10px 30px rgba(255, 107, 0, 0.3);
+    }
+  </style>
+
+  <!-- Hero Header -->
+  <header class="relative overflow-hidden min-h-[90vh] flex items-center bg-grey-100">
+    <!-- Background Image -->
+    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1800&q=80')] bg-cover bg-center"></div>
+
+    <!-- Content -->
+    <div class="container mx-auto px-6 relative z-10 text-center lg:text-left">
+      <div class="max-w-2xl mx-auto lg:mx-0">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">Discover & Share <span class="text-orange-400">Delicious</span> Recipes</h1>
+        <p class="text-xl text-gray-200 mb-8">Join our community of food lovers and explore thousands of recipes from around the world.</p>
+        {% if not request.user.is_authenticated %}
+          {% comment %}login and signup buttons{% endcomment %}
+          <div class="flex justify-start items-center mb-6">
+            <a href="{% url 'login' %}" class="px-6 py-2 cursor-pointer border border-gray-300 rounded-lg text-white transition-colors">Login</a>
+            <a href="{% url 'signup' %}" class="px-6 py-2 ml-2 cursor-pointer bg-primary border border-gray-300 text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center">Signup</a>
+          </div>
+          {% comment %} {% endcomment %}
+        {% endif %}
+
+        <!-- Search Bar and login and signup buttons -->
+        <div class="relative max-w-xl mx-auto lg:mx-0">
+          <div class="flex bg-white rounded-full overflow-hidden search-shadow">
+            <input type="text" placeholder="Search for recipes..." class="flex-grow px-6 py-4 focus:outline-none text-gray-800" />
+            <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 transition-colors"><i class="fas fa-search"></i></button>
+          </div>
+          <div class="mt-3 flex flex-wrap justify-center lg:justify-start gap-2">
+            <span class="text-sm text-gray-300">Popular:</span>
+            <a href="#" class="text-sm text-white hover:text-orange-300 transition-colors">Pasta</a>
+            <a href="#" class="text-sm text-white hover:text-orange-300 transition-colors">Salad</a>
+            <a href="#" class="text-sm text-white hover:text-orange-300 transition-colors">Dessert</a>
+            <a href="#" class="text-sm text-white hover:text-orange-300 transition-colors">Vegan</a>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-12 flex flex-wrap justify-center lg:justify-start gap-8">
+          <div class="text-center">
+            <div class="text-3xl font-bold text-white">10,000+</div>
+            <div class="text-orange-300">Recipes</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-white">500+</div>
+            <div class="text-orange-300">Chefs</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-white">1M+</div>
+            <div class="text-orange-300">Food Lovers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <a href="#recipes" class="text-white text-2xl"><i class="fas fa-chevron-down"></i></a>
+    </div>
+  </header>
+
+  <div class="container max-w-7xl mx-auto px-4 py-8 px-4 sm:px-6 lg:px-8" id="recipes">
+    <h1 class="text-3xl text-center font-bold text-gray-900 mb-2">Browse Recipes</h1>
+    <p class="text-gray-600 mb-6 text-center">Discover amazing recipes shared by our community</p>
+    <!-- Search and Filter Bar -->
+    <div class="bg-white rounded-lg shadow-sm mb-6">
+      <div class="flex flex-col md:flex-row gap-4">
+        <!-- Search Input -->
+        <div class="flex-1">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm" placeholder="Search recipes..." />
+          </div>
+        </div>
+
+        <!-- Cooking Time Filter -->
+        <div class="w-full md:w-48">
+          <select id="timeFilter" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none bg-white">
+            <option value="0">Any Time</option>
+            <option value="15">Quick (≤15 min)</option>
+            <option value="30">Fast (≤30 min)</option>
+            <option value="60">Medium (≤1 hr)</option>
+            <option value="120">Long (≤2 hrs)</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+            <i class="fas fa-chevron-down text-xs"></i>
+          </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="w-full md:w-48">
+          <select id="categoryFilter" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none bg-white">
+            <option value="all">All Categories</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Salads">Salads</option>
+            <option value="Appetizers">Appetizers</option>
+            <option value="Beverages">Beverages</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+            <i class="fas fa-chevron-down text-xs"></i>
+          </div>
+        </div>
+
+        <!-- Rating Filter -->
+        <div class="w-full md:w-40">
+          <select id="ratingFilter" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none bg-white">
+            <option value="0">Any Rating</option>
+            <option value="4">4+ Stars</option>
+            <option value="4.5">4.5+ Stars</option>
+            <option value="5">5 Stars</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+            <i class="fas fa-chevron-down text-xs"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Chocolate Cake -->
+      {% for recipe in recipes %}
+        {% include 'recipes/recipe_container.html' %}
+      {% endfor %}
+
+      {% comment %} <!-- Pasta Primavera -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Pasta Primavera" class="w-full h-48 object-cover" />
+          <span class="absolute top-2 left-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Main Course</span>
+        </div>
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-lg text-gray-800">Pasta Primavera</h3>
+            <span class="flex items-center text-sm text-gray-600"><i class="fas fa-comment-alt mr-1"></i> 134</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Fresh vegetables and pasta in a light cream sauce</p>
+          <div class="flex items-center justify-between border-t border-gray-100 pt-3">
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mike Chen" class="w-6 h-6 rounded-full mr-2" />
+              <span class="text-sm text-gray-700">Mike Chen</span>
+            </div>
+            <div class="flex items-center">
+              <div class="flex mr-4">
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                <span class="text-xs text-gray-600 ml-1">4.6</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+            <button class="flex items-center text-gray-500 hover:text-red-500">
+              <i class="far fa-heart mr-1"></i>
+              <span class="text-sm">Like</span>
+            </button>
+            <button class="flex items-center text-gray-500 hover:text-blue-500">
+              <i class="far fa-bookmark mr-1"></i>
+              <span class="text-sm">Save</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caesar Salad -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Caesar Salad" class="w-full h-48 object-cover" />
+          <span class="absolute top-2 left-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Salads</span>
+        </div>
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-lg text-gray-800">Caesar Salad</h3>
+            <span class="flex items-center text-sm text-gray-600"><i class="fas fa-comment-alt mr-1"></i> 98</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Classic Caesar salad with homemade dressing</p>
+          <div class="flex items-center justify-between border-t border-gray-100 pt-3">
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="Emma Davis" class="w-6 h-6 rounded-full mr-2" />
+              <span class="text-sm text-gray-700">Emma Davis</span>
+            </div>
+            <div class="flex items-center">
+              <div class="flex mr-4">
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="far fa-star text-yellow-400"></i>
+                <span class="text-xs text-gray-600 ml-1">4.5</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+            <button class="flex items-center text-gray-500 hover:text-red-500">
+              <i class="far fa-heart mr-1"></i>
+              <span class="text-sm">Like</span>
+            </button>
+            <button class="flex items-center text-gray-500 hover:text-blue-500">
+              <i class="far fa-bookmark mr-1"></i>
+              <span class="text-sm">Save</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bruschetta -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1529563021893-cc83c992d00d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Bruschetta" class="w-full h-48 object-cover" />
+          <span class="absolute top-2 left-2 bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">Appetizers</span>
+        </div>
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-lg text-gray-800">Bruschetta</h3>
+            <span class="flex items-center text-sm text-gray-600"><i class="fas fa-comment-alt mr-1"></i> 87</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Toasted bread topped with fresh tomatoes and basil</p>
+          <div class="flex items-center justify-between border-t border-gray-100 pt-3">
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Marco Rossi" class="w-6 h-6 rounded-full mr-2" />
+              <span class="text-sm text-gray-700">Marco Rossi</span>
+            </div>
+            <div class="flex items-center">
+              <div class="flex mr-4">
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                <span class="text-xs text-gray-600 ml-1">4.7</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+            <button class="flex items-center text-gray-500 hover:text-red-500">
+              <i class="far fa-heart mr-1"></i>
+              <span class="text-sm">Like</span>
+            </button>
+            <button class="flex items-center text-gray-500 hover:text-blue-500">
+              <i class="far fa-bookmark mr-1"></i>
+              <span class="text-sm">Save</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smoothie Bowl -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1505252585461-04db1eb84625?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Smoothie Bowl" class="w-full h-48 object-cover" />
+          <span class="absolute top-2 left-2 bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Beverages</span>
+        </div>
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-lg text-gray-800">Smoothie Bowl</h3>
+            <span class="flex items-center text-sm text-gray-600"><i class="fas fa-comment-alt mr-1"></i> 76</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Healthy smoothie bowl with fresh fruits and granola</p>
+          <div class="flex items-center justify-between border-t border-gray-100 pt-3">
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Lisa Park" class="w-6 h-6 rounded-full mr-2" />
+              <span class="text-sm text-gray-700">Lisa Park</span>
+            </div>
+            <div class="flex items-center">
+              <div class="flex mr-4">
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <span class="text-xs text-gray-600 ml-1">4.9</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+            <button class="flex items-center text-gray-500 hover:text-red-500">
+              <i class="far fa-heart mr-1"></i>
+              <span class="text-sm">Like</span>
+            </button>
+            <button class="flex items-center text-gray-500 hover:text-blue-500">
+              <i class="far fa-bookmark mr-1"></i>
+              <span class="text-sm">Save</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grilled Salmon -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Grilled Salmon" class="w-full h-48 object-cover" />
+          <span class="absolute top-2 left-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Main Course</span>
+        </div>
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-lg text-gray-800">Grilled Salmon</h3>
+            <span class="flex items-center text-sm text-gray-600"><i class="fas fa-comment-alt mr-1"></i> 112</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Perfectly grilled salmon with lemon herb seasoning</p>
+          <div class="flex items-center justify-between border-t border-gray-100 pt-3">
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="David Kim" class="w-6 h-6 rounded-full mr-2" />
+              <span class="text-sm text-gray-700">David Kim</span>
+            </div>
+            <div class="flex items-center">
+              <div class="flex mr-4">
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                <span class="text-xs text-gray-600 ml-1">4.8</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+            <button class="flex items-center text-gray-500 hover:text-red-500">
+              <i class="far fa-heart mr-1"></i>
+              <span class="text-sm">Like</span>
+            </button>
+            <button class="flex items-center text-gray-500 hover:text-blue-500">
+              <i class="far fa-bookmark mr-1"></i>
+              <span class="text-sm">Save</span>
+            </button>
+          </div>
+        </div>
+      </div> {% endcomment %}
+    </div>
+  </div>
+
+  <script>
+    // Simple animation for scroll indicator
+    document.querySelector('a[href="#recipes"]').addEventListener('click', function (e) {
+      e.preventDefault()
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      })
+    })
+  </script>
+
+  {% include '.\footer.html' %}
+{% endblock %}
