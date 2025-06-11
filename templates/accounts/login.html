@@ -37,7 +37,7 @@
             {% csrf_token %}
             <div class="message">
               {% for message in messages %}
-                <h1>{{ message.error }}</h1>
+                <h1>{{ message}}</h1>
               {% endfor %}
             </div>
             <!-- Email Input -->

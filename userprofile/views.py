@@ -9,10 +9,13 @@ def profile(request):
     if request.method == 'POST':
         return redirect('profile')
     
-    no_of_recipes = Recipe.objects.filter(user=request.user).count()
-    return render(request, 'userprofile/profile.html', {'user': request.user, 'no_of_recipes': no_of_recipes})
+    recipes = Recipe.objects.filter(user = request.user)
+    return render(request, 'userprofile/profile.html', {'user': request.user, 'recipes': recipes, 'no_of_recipes': recipes.count()})
 
 
 def public_profile(request, id):
+    # fetches only one user
     user = User.objects.get(id=id)
-    return render(request, 'userprofile/public_profile.html', {'user': user})
+    # countes the recipes of user, does not fetches recipes data
+    no_of_recipes = Recipe.objects.filter(user = user).count()
+    return render(request, 'userprofile/public_profile.html', {'user': user, 'no_of_recipes': no_of_recipes})

@@ -5,7 +5,9 @@ from accounts.models import User
 
 # Create your views here.
 def recipes(request):
-    recipes = Recipe.objects.all()
+
+    # fetches recipes of other users and also fetches user data too with just one query
+    recipes = Recipe.objects.exclude(user = request.user).select_related('user')
     return render(request, 'recipes/home.html', {'recipes': recipes})
 
 @login_required(login_url='login')
