@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Recipe
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 # Create your views here.
 def recipes(request):
@@ -58,3 +60,18 @@ def recipe_detail(request, id):
 
     return render(request, 'recipes/recipe_detail.html', {'recipe': recipe, 'instruction_counter': 0, 'user': recipe.user.full_name})
 
+
+@login_required(login_url='login')
+def toggle_like(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    if recipe.likes.filter(id=request.user.id).exists():
+        recipe.likes.remove(request.user)
+        liked = False
+    else:
+        recipe.likes.add(request.user)
+        liked = True
+    
+    return JsonResponse({
+        'liked': liked,
+        'total_likes': recipe.likes.count()
+    })

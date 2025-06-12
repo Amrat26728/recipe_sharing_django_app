@@ -33,6 +33,9 @@ INSTALLED_APPS = [
     'accounts',
     'userprofile',
     'recipes',
+
+    # other apps
+    # 'django_htmx',  # doet not working properly
 ]
 
 MIDDLEWARE = [
@@ -43,6 +46,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # other middlewares
+    # 'django_htmx.middleware.HtmxMiddleware',
 ]
 
 ROOT_URLCONF = 'recipe_sharing_django_app.urls'

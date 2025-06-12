@@ -16,3 +16,13 @@ class Recipe(models.Model):
     ingredients = models.JSONField(default=list)
     instructions = models.JSONField(default=list)
     posted_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name='liked_recipes', blank=True)
+
+    def toggle_like(self, user):
+        """Toggle like status for a user."""
+        if self.likes.filter(id=user.id).exists():
+            self.likes.remove(user)
+            return False  # Like removed
+        else:
+            self.likes.add(user)
+            return True  # Like added
