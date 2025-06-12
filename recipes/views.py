@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Recipe
-from accounts.models import User
 
 # Create your views here.
 def recipes(request):
+    if not request.user.is_authenticated:
+        recipes = Recipe.objects.all().select_related('user')
+        return render(request, 'recipes/home.html', {'recipes': recipes})
 
     # fetches recipes of other users and also fetches user data too with just one query
     recipes = Recipe.objects.exclude(user = request.user).select_related('user')
@@ -55,3 +57,4 @@ def recipe_detail(request, id):
     recipe = Recipe.objects.get(id=id)
 
     return render(request, 'recipes/recipe_detail.html', {'recipe': recipe, 'instruction_counter': 0, 'user': recipe.user.full_name})
+
