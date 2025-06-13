@@ -1,8 +1,0 @@
-<button 
-  hx-post="{% url 'like_recipe' recipe.id %}" 
-  hx-target="#like-btn-{{ recipe.id }}" 
-  hx-swap="outerHTML" 
-  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  {% if is_liked %} ❤️ Unlike {% else %} 🤍 Like {% endif %}
-  ({{ recipe.total_likes }})
-</button>

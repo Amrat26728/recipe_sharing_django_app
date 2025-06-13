@@ -70,8 +70,23 @@ def toggle_like(request, recipe_id):
     else:
         recipe.likes.add(request.user)
         liked = True
-    
+        
     return JsonResponse({
         'liked': liked,
         'total_likes': recipe.likes.count()
+    })
+
+
+@login_required(login_url='login')
+def toggle_bookmark(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    if recipe.bookmarks.filter(id=request.user.id).exists():
+        recipe.bookmarks.remove(request.user)
+        bookmarked = False
+    else:
+        recipe.bookmarks.add(request.user)
+        bookmarked = True
+    
+    return JsonResponse({
+        'bookmarked': bookmarked,
     })

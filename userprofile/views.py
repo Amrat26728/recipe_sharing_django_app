@@ -9,7 +9,12 @@ def profile(request):
     if request.method == 'POST':
         return redirect('profile')
     
-    recipes = Recipe.objects.filter(user = request.user)
+    # recipes = Recipe.objects.filter(user = request.user)
+    recipes = Recipe.objects.filter(user=request.user).prefetch_related(
+        'likes',
+        'bookmarks'
+    ).select_related('user').all()
+
     return render(request, 'userprofile/profile.html', {'user': request.user, 'recipes': recipes, 'no_of_recipes': recipes.count()})
 
 

@@ -176,6 +176,7 @@
       })
     })
     
+    // like button toggle  AJAX
     document.addEventListener('DOMContentLoaded', function () {
       // Event delegation for the entire grid
       document.querySelector('.recipes-grid').addEventListener('click', function (e) {
@@ -185,19 +186,19 @@
     
         const recipeId = likeBtn.dataset.recipeId
         const likeCountEl = likeBtn.querySelector('.like-count')
-        const heartIcon = likeBtn.querySelector('i')
+        const bookmarkIcon = likeBtn.querySelector('i')
         const currentCount = parseInt(likeCountEl.textContent)
         const isLiked = likeBtn.classList.contains('liked')
     
         // 1. Immediate UI update (optimistic)
         likeBtn.classList.toggle('liked')
         if (likeBtn.classList.contains('liked')) {
-          heartIcon.classList.replace('far', 'fas')
-          heartIcon.style.color = 'red'
+          bookmarkIcon.classList.replace('far', 'fas')
+          bookmarkIcon.style.color = 'red'
           likeCountEl.textContent = currentCount + 1
         } else {
-          heartIcon.classList.replace('fas', 'far')
-          heartIcon.style.color = ''
+          bookmarkIcon.classList.replace('fas', 'far')
+          bookmarkIcon.style.color = ''
           likeCountEl.textContent = currentCount - 1
         }
     
@@ -217,6 +218,7 @@
               likeCountEl.textContent = currentCount
               throw new Error('Like update failed')
             }
+            //window.location.href = '/accounts/login/?next=' + window.location.pathname;
             return response.json()
           })
           .then((data) => {
@@ -225,10 +227,59 @@
           })
           .catch((error) => {
             likeBtn.classList.toggle('liked')
-            heartIcon.classList.toggle('far')
-            heartIcon.classList.toggle('fas')
-            heartIcon.style.color = likeBtn.classList.contains('liked') ? 'red' : ''
+            bookmarkIcon.classList.toggle('far')
+            bookmarkIcon.classList.toggle('fas')
+            bookmarkIcon.style.color = likeBtn.classList.contains('liked') ? 'red' : ''
             likeCountEl.textContent = currentCount
+            console.error('Error:', error)
+          })
+      })
+    })
+    
+    // bookmark button toggle
+    document.addEventListener('DOMContentLoaded', function () {
+      // Event delegation for the entire grid
+      document.querySelector('.recipes-grid').addEventListener('click', function (e) {
+        // Find the closest like button (works even if clicking the heart or count)
+        const bookmarkBtn = e.target.closest('.bookmark-btn')
+        if (!bookmarkBtn) return
+    
+        const recipeId = bookmarkBtn.dataset.recipeId
+        const bookmarkIcon = bookmarkBtn.querySelector('i')
+        const isBookmarked= bookmarkBtn.classList.contains('bookmarked')
+    
+        // 1. Immediate UI update (optimistic)
+        bookmarkBtn.classList.toggle('bookmarked')
+        if (bookmarkBtn.classList.contains('bookmarked')) {
+          bookmarkIcon.classList.replace('far', 'fas')
+          bookmarkIcon.style.color = '#FF6B00'
+        } else {
+          bookmarkIcon.classList.replace('fas', 'far')
+          bookmarkIcon.style.color = ''
+        }
+    
+        // 2. Send AJAX request
+        fetch(`/toggle_bookmark/${recipeId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'same-origin'
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // Revert if error
+              bookmarkBtn.classList.toggle('bookmarked')
+              throw new Error('Bookmark update failed')
+            }
+            // window.location.href = '/accounts/login/?next=' + window.location.pathname;
+            return response.json()
+          }).catch((error) => {
+            bookmarkBtn.classList.toggle('bookmark')
+            bookmarkIcon.classList.toggle('far')
+            bookmarkIcon.classList.toggle('fas')
+            bookmarkIcon.style.color = bookmarkBtn.classList.contains('bookmarked') ? '#FF6B00' : ''
             console.error('Error:', error)
           })
       })

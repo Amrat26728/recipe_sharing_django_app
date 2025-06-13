@@ -53,21 +53,25 @@
     <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
       <div class="flex">
         {% comment %} like button {% endcomment %}
-        <button class="mr-2 like-btn {% if request.user in recipe.likes.all %}liked{% endif %}" data-recipe-id="{{ recipe.id }}">
+        <button class="p-2 like-btn {% if request.user in recipe.likes.all %}liked{% endif %}" data-recipe-id="{{ recipe.id }}">
           <i class="{% if request.user in recipe.likes.all %}
               fas
             {% else %}
               far
             {% endif %} fa-heart"
             style="{% if request.user in recipe.likes.all %}color: red;{% endif %}">
-
           </i>
           <span class="like-count">{{ recipe.likes.count }}</span>
         </button>
         {% comment %} bookmark button {% endcomment %}
-        <button class="flex items-center text-gray-500 hover:text-blue-500 ml-2">
-          <i class="far fa-bookmark mr-1"></i>
-          <span class="text-sm">Save</span>
+        <button class="p-2 bookmark-btn {% if request.user in recipe.bookmarks.all %}bookmarked{% endif %}" data-recipe-id="{{ recipe.id }}">
+          <i class="{% if request.user in recipe.bookmarks.all %}
+              fas
+            {% else %}
+              far
+            {% endif %} fa-bookmark"
+            style="{% if request.user in recipe.bookmarks.all %}color: #FF6B00;{% endif %}">
+          </i>
         </button>
       </div>
       <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-card bg-white rounded-lg overflow-hidden block text-blue-500 p-4">View</a>

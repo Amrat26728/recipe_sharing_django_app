@@ -13,9 +13,40 @@
               <h1 class="text-2xl md:text-4xl font-bold text-white">{{ recipe.title }}</h1>
             </div>
             <div class="flex space-x-3">
-              <button class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30"><i class="far fa-heart text-xl"></i></button>
+              {% comment %} <button class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30"><i class="far fa-heart text-xl"></i></button>
               <button class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30"><i class="far fa-bookmark text-xl"></i></button>
-              <button class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30"><i class="fas fa-share-alt text-xl"></i></button>
+              <button class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30"><i class="fas fa-share-alt text-xl"></i></button> {% endcomment %}
+              {% comment %}like button{% endcomment %}
+              <button class="flex items-center p-2 like-btn {% if request.user in recipe.likes.all %}liked{% endif %}" data-recipe-id="{{ recipe.id }}">
+                <i class="mr-1 {% if request.user in recipe.likes.all %}
+                    
+              fas
+
+                  {% else %}
+                    
+              far
+
+                  {% endif %} fa-heart"
+                  style="{% if request.user in recipe.likes.all %}color: red;{% endif %}">
+
+                </i>
+                <span class="like-count">{{ recipe.likes.count }}</span>
+              </button>
+              {% comment %}bookmark button{% endcomment %}
+              <button class="p-2 bookmark-btn {% if request.user in recipe.bookmarks.all %}bookmarked{% endif %}" data-recipe-id="{{ recipe.id }}">
+                <i class="{% if request.user in recipe.bookmarks.all %}
+                    
+              fas
+
+                  {% else %}
+                    
+              far
+
+                  {% endif %} fa-bookmark"
+                  style="{% if request.user in recipe.bookmarks.all %}color: #FF6B00;{% endif %}">
+
+                </i>
+              </button>
             </div>
           </div>
         </div>
@@ -26,8 +57,8 @@
           <div class="flex items-center">
             <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" class="w-10 h-10 rounded-full mr-3" />
             <div>
-              <p class="text-sm font-medium">{{user}}</p>
-              <p class="text-xs text-gray-500">Posted on {{recipe.posted_at|date:"F j, Y"}}</p>
+              <p class="text-sm font-medium">{{ user }}</p>
+              <p class="text-xs text-gray-500">Posted on {{ recipe.posted_at|date:'F j, Y' }}</p>
             </div>
           </div>
 
@@ -82,29 +113,13 @@
           <h2 class="text-xl font-semibold text-gray-900 mb-4">Ingredients</h2>
           <div class="space-y-3">
             {% if recipe.ingredients %}
-            {% for ingredient in recipe.ingredients %}
-            <div class="flex items-center">
-              <input type="checkbox" id="{{forloop.counter}}" class="rounded border-gray-300 text-orange-600 focus:ring-orange-500 mr-3" />
-              <label class="text-gray-700" for="{{forloop.counter}}">{{ingredient}}</label>
-            </div>
-            {% endfor %}
+              {% for ingredient in recipe.ingredients %}
+                <div class="flex items-center">
+                  <input type="checkbox" id="{{ forloop.counter }}" class="rounded border-gray-300 text-orange-600 focus:ring-orange-500 mr-3" />
+                  <label class="text-gray-700" for="{{ forloop.counter }}">{{ ingredient }}</label>
+                </div>
+              {% endfor %}
             {% endif %}
-            {% comment %} <div class="flex items-center">
-              <input type="checkbox" id="2" class="rounded border-gray-300 text-orange-600 focus:ring-orange-500 mr-3" />
-              <label class="text-gray-700" for="2">4 tablespoons unsalted butter</label>
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" id="3" class="rounded border-gray-300 text-orange-600 focus:ring-orange-500 mr-3" />
-              <label class="text-gray-700" for="3">2 large eggs</label>
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" id="4" class="rounded border-gray-300 text-orange-600 focus:ring-orange-500 mr-3" />
-              <label class="text-gray-700" for="4">2 tablespoons granulated sugar</label>
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" id="5" class="rounded border-gray-300 text-orange-600 focus:ring-orange-500 mr-3" />
-              <label class="text-gray-700" for="5">2 tablespoons all-purpose flour</label>
-            </div> {% endcomment %}
           </div>
         </div>
 
@@ -115,31 +130,11 @@
             {% if recipe.instructions %}
               {% for instruction in recipe.instructions %}
                 <div class="flex">
-                  <div class="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-4">{{forloop.counter}}</div>
-                  <p class="text-gray-700 pt-1">{{instruction}}</p>
+                  <div class="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-4">{{ forloop.counter }}</div>
+                  <p class="text-gray-700 pt-1">{{ instruction }}</p>
                 </div>
               {% endfor %}
             {% endif %}
-            {% comment %} <div class="flex">
-              <div class="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-4">2</div>
-              <p class="text-gray-700 pt-1">Melt chocolate and butter in a double boiler or microwave, stirring until smooth.</p>
-            </div>
-            <div class="flex">
-              <div class="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-4">3</div>
-              <p class="text-gray-700 pt-1">In a bowl, whisk eggs and sugar until thick. Add melted chocolate mixture.</p>
-            </div>
-            <div class="flex">
-              <div class="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-4">4</div>
-              <p class="text-gray-700 pt-1">Fold in flour and salt until just combined. Divide between prepared ramekins.</p>
-            </div>
-            <div class="flex">
-              <div class="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-4">5</div>
-              <p class="text-gray-700 pt-1">Bake for 12-14 minutes until edges are firm but center jiggles slightly.</p>
-            </div>
-            <div class="flex">
-              <div class="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-4">6</div>
-              <p class="text-gray-700 pt-1">Let cool for 1 minute, then run knife around edges and invert onto plates. Serve immediately with ice cream.</p>
-            </div> {% endcomment %}
           </div>
         </div>
       </div>
@@ -356,4 +351,116 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // like button toggle  AJAX
+    document.addEventListener('DOMContentLoaded', function () {
+      // Event delegation for the entire grid
+      document.querySelector('.container').addEventListener('click', function (e) {
+        // Find the closest like button (works even if clicking the heart or count)
+        const likeBtn = e.target.closest('.like-btn')
+        if (!likeBtn) return
+    
+        const recipeId = likeBtn.dataset.recipeId
+        const likeCountEl = likeBtn.querySelector('.like-count')
+        const bookmarkIcon = likeBtn.querySelector('i')
+        const currentCount = parseInt(likeCountEl.textContent)
+        const isLiked = likeBtn.classList.contains('liked')
+    
+        // 1. Immediate UI update (optimistic)
+        likeBtn.classList.toggle('liked')
+        if (likeBtn.classList.contains('liked')) {
+          bookmarkIcon.classList.replace('far', 'fas')
+          bookmarkIcon.style.color = 'red'
+          likeCountEl.textContent = currentCount + 1
+        } else {
+          bookmarkIcon.classList.replace('fas', 'far')
+          bookmarkIcon.style.color = ''
+          likeCountEl.textContent = currentCount - 1
+        }
+    
+        // 2. Send AJAX request
+        fetch(`/toggle_like/${recipeId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'same-origin'
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // Revert if error
+              likeBtn.classList.toggle('liked')
+              likeCountEl.textContent = currentCount
+              throw new Error('Like update failed')
+            }
+            //window.location.href = '/accounts/login/?next=' + window.location.pathname;
+            return response.json()
+          })
+          .then((data) => {
+            // Optional: Ensure server and client are synced
+            likeCountEl.textContent = data.total_likes
+          })
+          .catch((error) => {
+            likeBtn.classList.toggle('liked')
+            bookmarkIcon.classList.toggle('far')
+            bookmarkIcon.classList.toggle('fas')
+            bookmarkIcon.style.color = likeBtn.classList.contains('liked') ? 'red' : ''
+            likeCountEl.textContent = currentCount
+            console.error('Error:', error)
+          })
+      })
+    })
+    
+    // bookmark button toggle
+    document.addEventListener('DOMContentLoaded', function () {
+      // Event delegation for the entire grid
+      document.querySelector('.container').addEventListener('click', function (e) {
+        // Find the closest like button (works even if clicking the heart or count)
+        const bookmarkBtn = e.target.closest('.bookmark-btn')
+        if (!bookmarkBtn) return
+    
+        const recipeId = bookmarkBtn.dataset.recipeId
+        const bookmarkIcon = bookmarkBtn.querySelector('i')
+        const isBookmarked = bookmarkBtn.classList.contains('bookmarked')
+    
+        // 1. Immediate UI update (optimistic)
+        bookmarkBtn.classList.toggle('bookmarked')
+        if (bookmarkBtn.classList.contains('bookmarked')) {
+          bookmarkIcon.classList.replace('far', 'fas')
+          bookmarkIcon.style.color = '#FF6B00'
+        } else {
+          bookmarkIcon.classList.replace('fas', 'far')
+          bookmarkIcon.style.color = ''
+        }
+    
+        // 2. Send AJAX request
+        fetch(`/toggle_bookmark/${recipeId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'same-origin'
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // Revert if error
+              bookmarkBtn.classList.toggle('bookmarked')
+              throw new Error('Bookmark update failed')
+            }
+            // window.location.href = '/accounts/login/?next=' + window.location.pathname
+            return response.json()
+          })
+          .catch((error) => {
+            bookmarkBtn.classList.toggle('bookmark')
+            bookmarkIcon.classList.toggle('far')
+            bookmarkIcon.classList.toggle('fas')
+            bookmarkIcon.style.color = bookmarkBtn.classList.contains('bookmarked') ? '#FF6B00' : ''
+            console.error('Error:', error)
+          })
+      })
+    })
+  </script>
 {% endblock %}
