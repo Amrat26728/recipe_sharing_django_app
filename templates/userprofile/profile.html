@@ -25,10 +25,10 @@
       <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
         <div class="relative">
           <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" class="w-32 h-32 rounded-full object-cover border-4 border-white" />
-          <!--      <button
+          <!--         <button
                             class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full hover:bg-primary-dark transition-colors">
                             <i class="fas fa-camera text-sm"></i>
-                        </button>      -->
+                        </button>         -->
         </div>
 
         <div class="flex-1 text-center md:text-left">
@@ -134,23 +134,28 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Shared Recipes -->
         {% for recipe in recipes %}
-          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Chocolate Cake" class="w-full h-48 object-cover" />
-            <div class="p-4">
-              <div class="flex justify-between items-start mb-2">
-                <h3 class="font-bold text-gray-800">{{ recipe.title }}</h3>
-                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">{{ recipe.category }}</span>
-              </div>
-              <p class="text-gray-600 text-sm mb-3">{{ recipe.description }}</p>
-              <div class="flex items-center justify-between text-sm text-gray-500">
-                <div class="flex items-center">
-                  <i class="fas fa-star text-yellow-400 mr-1"></i>
-                  <span>4.8 (156)</span>
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+              <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Chocolate Cake" class="w-full h-48 object-cover" />
+              <div class="p-4">
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-bold text-gray-800">{{ recipe.title }}</h3>
+                  <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">{{ recipe.category }}</span>
                 </div>
-                <span>{{ recipe.posted_at|date:'F j, Y' }}</span>
+                <p class="text-gray-600 text-sm mb-3">{{ recipe.description }}</p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                  <div class="flex items-center">
+                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                    <span>4.8 (156)</span>
+                  </div>
+                  <span>{{ recipe.posted_at|date:'F j, Y' }}</span>
+                </div>
               </div>
             </div>
-            <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-card bg-white rounded-lg overflow-hidden block text-blue-500 p-4">View</a>
+            <div class="flex justify-between">
+              <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-card bg-white rounded-lg overflow-hidden block text-blue-500 p-4">View</a>
+              <a href="{% url 'delete_recipe' recipe.id %}" class="recipe-card bg-white rounded-lg overflow-hidden p-4 text-red-700">Delete</a>
+            </div>
           </div>
         {% endfor %}
       </div>
@@ -158,69 +163,62 @@
 
     <div id="liked" class="tab-content">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Liked Recipe 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Vegetable Stir Fry" class="w-full h-48 object-cover" />
-          <div class="p-4">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-bold text-gray-800">Vegetable Stir Fry</h3>
-              <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Vegan</span>
-            </div>
-            <p class="text-gray-600 text-sm mb-3">Colorful mix of fresh vegetables in savory sauce</p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <div class="flex items-center">
-                <i class="fas fa-star text-yellow-400 mr-1"></i>
-                <span>4.7 (215)</span>
+        <!-- Liked Recipes -->
+        {% for liked_recipe in liked_recipes %}
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+              <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Vegetable Stir Fry" class="w-full h-48 object-cover" />
+              <div class="p-4">
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-bold text-gray-800">{{ liked_recipe.title }}</h3>
+                  <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">{{ liked_recipe.category }}</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-3">{{ liked_recipe.description }}</p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                  <div class="flex items-center">
+                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                    <span>4.7 (215)</span>
+                  </div>
+                  <span>{{ liked_recipe.user.full_name }}</span>
+                </div>
               </div>
-              <span>By Mike Chen</span>
             </div>
+            <a href="{% url 'recipe_detail' liked_recipe.id %}" class="recipe-card bg-white rounded-lg overflow-hidden text-blue-500 p-4">View</a>
           </div>
-        </div>
-
-        <!-- Liked Recipe 2 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-          <img src="https://images.unsplash.com/photo-1604909052743-94e838986d24?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Beef Bourguignon" class="w-full h-48 object-cover" />
-          <div class="p-4">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-bold text-gray-800">Beef Bourguignon</h3>
-              <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">French</span>
-            </div>
-            <p class="text-gray-600 text-sm mb-3">Classic French stew with tender beef</p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <div class="flex items-center">
-                <i class="fas fa-star text-yellow-400 mr-1"></i>
-                <span>4.8 (276)</span>
-              </div>
-              <span>By Sophie Martin</span>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
 
+    <!-- bookmarked recipes -->
     <div id="bookmarked" class="tab-content">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Bookmarked Recipe 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-          <img src="https://images.unsplash.com/photo-1505252585461-04db1eb84625?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Smoothie Bowl" class="w-full h-48 object-cover" />
-          <div class="p-4">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-bold text-gray-800">Smoothie Bowl</h3>
-              <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Breakfast</span>
-            </div>
-            <p class="text-gray-600 text-sm mb-3">Healthy breakfast with fresh fruits</p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <div class="flex items-center">
-                <i class="fas fa-star text-yellow-400 mr-1"></i>
-                <span>4.9 (153)</span>
+        <!-- Bookmarked Recipes -->
+        {% for bookmarked_recipe in bookmarked_recipes %}
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+              <img src="https://images.unsplash.com/photo-1505252585461-04db1eb84625?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Smoothie Bowl" class="w-full h-48 object-cover" />
+              <div class="p-4">
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-bold text-gray-800">{{ bookmarked_recipe.title }}</h3>
+                  <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">{{ bookmarked_recipe.category }}</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-3">{{ bookmarked_recipe.description }}</p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                  <div class="flex items-center">
+                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                    <span>4.9 (153)</span>
+                  </div>
+                  <span>{{ bookmarked_recipe.user.full_name }}</span>
+                </div>
               </div>
-              <span>By Lisa Park</span>
             </div>
+            <a href="{% url 'recipe_detail' bookmarked_recipe.id %}" class="recipe-card bg-white rounded-lg overflow-hidden text-blue-500 p-4">View</a>
           </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
 
+    <!-- drafted recipes -->
     <div id="drafts" class="tab-content">
       <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="divide-y divide-gray-200">

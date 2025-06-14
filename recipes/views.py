@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Recipe
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.core import exceptions
+from django.contrib import messages
 
 # Create your views here.
 def recipes(request):
@@ -90,3 +92,16 @@ def toggle_bookmark(request, recipe_id):
     return JsonResponse({
         'bookmarked': bookmarked,
     })
+
+@login_required(login_url='login')
+def delete_recipe(request, recipe_id):
+    try:
+        Recipe.objects.filter(
+            id=recipe_id,
+            user=request.user
+        ).delete()
+        messages.success(request, "recipe with id={} is deleted.".format(recipe_id))
+        return redirect('profile')
+    except exceptions as e:
+        messages.error(request, str(e))
+        return redirect('profile')

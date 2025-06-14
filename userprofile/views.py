@@ -30,8 +30,10 @@ def profile(request):
         'likes',
         'bookmarks'
     ).select_related('user').all()
+    liked_recipes = Recipe.objects.filter(likes=request.user)
+    bookmarked_recipes = Recipe.objects.filter(bookmarks=request.user)
 
-    return render(request, 'userprofile/profile.html', {'user': request.user, 'recipes': recipes, 'no_of_recipes': recipes.count()})
+    return render(request, 'userprofile/profile.html', {'user': request.user, 'recipes': recipes, 'no_of_recipes': recipes.count(), 'liked_recipes': liked_recipes, 'bookmarked_recipes': bookmarked_recipes})
 
 
 def public_profile(request, id):
