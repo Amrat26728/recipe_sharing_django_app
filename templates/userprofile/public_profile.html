@@ -31,25 +31,12 @@
               <p class="text-gray-600">{{ user.email }}</p>
             </div>
           </div>
-
-          <div class="flex flex-wrap justify-center md:justify-start gap-4 mb-4">
-            <div class="text-center">
-              <div class="text-xl font-bold text-primary">{{ no_of_recipes }}</div>
-              <div class="text-sm text-gray-600">Recipes</div>
-            </div>
-            <div class="text-center">
-              <div class="text-xl font-bold text-primary">1.2K</div>
-              <div class="text-sm text-gray-600">Followers</div>
-            </div>
-            <div class="text-center">
-              <div class="text-xl font-bold text-primary">856</div>
-              <div class="text-sm text-gray-600">Following</div>
-            </div>
-          </div>
-
-          {% comment %} <p class="text-gray-700 max-w-2xl">Passionate about creating delicious meals that bring people together. Love experimenting with flavors from around the world!</p> {% endcomment %}
           <p class="text-gray-700 max-w-2xl">{{ user.bio }}</p>
           <p class="text-gray-700 max-w-2xl">Location: {{ user.location }}</p>
+          <div class="text-center flex mt-2 items-center">
+            <div class="text-sm font-bold text-gray-600">Recipes Shared: </div>
+            <div class="ml-2 text-lg font-bold text-primary">{{ no_of_recipes }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -77,13 +64,17 @@
                   <i class="{% if request.user in recipe.likes.all %}
                       
                       
+                      
               fas
+
 
 
                     {% else %}
                       
                       
+                                                 
               far
+
 
 
                     {% endif %} fa-heart"
@@ -97,13 +88,17 @@
                   <i class="{% if request.user in recipe.bookmarks.all %}
                       
                       
+                           
               fas
+
 
 
                     {% else %}
                       
                       
+                           
               far
+
 
 
                     {% endif %} fa-bookmark"

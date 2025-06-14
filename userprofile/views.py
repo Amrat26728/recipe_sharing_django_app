@@ -41,7 +41,7 @@ def public_profile(request, id):
     user = User.objects.get(id=id)
     # countes the recipes of user, does not fetches recipes data
     recipes = Recipe.objects.filter(user = user)
-    following_count = user.following.count()
-    followers_count = user.followers.count()
     no_of_recipes = recipes.count()
-    return render(request, 'userprofile/public_profile.html', {'user': user, 'recipes': recipes, 'no_of_recipes': no_of_recipes, 'following': following_count, 'followers': followers_count})
+    return render(request, 'userprofile/public_profile.html', {'user': user, 'recipes': recipes, 'no_of_recipes': no_of_recipes})
+
+

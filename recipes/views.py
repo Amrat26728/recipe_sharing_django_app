@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Recipe
-from django.template.loader import render_to_string
+from .models import Recipe, Comment
 from django.http import JsonResponse
 from django.core import exceptions
 from django.contrib import messages
@@ -59,8 +58,9 @@ def add_recipe(request):
 def recipe_detail(request, id):
 
     recipe = Recipe.objects.get(id=id)
+    comments = Comment.objects.filter(recipe=recipe).prefetch_related('user')
 
-    return render(request, 'recipes/recipe_detail.html', {'recipe': recipe, 'instruction_counter': 0, 'user': recipe.user.full_name})
+    return render(request, 'recipes/recipe_detail.html', {'recipe': recipe, 'user': recipe.user.full_name, 'comments': comments})
 
 
 @login_required(login_url='login')
@@ -105,3 +105,25 @@ def delete_recipe(request, recipe_id):
     except exceptions as e:
         messages.error(request, str(e))
         return redirect('profile')
+
+@login_required(login_url='login')
+def add_comment(request, recipe_id):
+    if request.method == 'POST':
+        print('before adding comment')
+        comment = request.POST.get('comment')
+        if comment:
+            print('inside if and before adding comment')
+            recipe = Recipe.objects.get(id=recipe_id)
+            Comment.objects.create(
+                recipe=recipe,
+                user=request.user,
+                comment=comment
+            )
+            print('after adding comment')
+            messages.success(request, "Comment added.")
+            return redirect('recipe_detail', id=recipe_id)
+        else:
+            messages.error(request, "Enter comment first")
+            return redirect('recipe_detail', id=recipe_id)
+    
+    return redirect('recipe_detail', id=recipe_id)

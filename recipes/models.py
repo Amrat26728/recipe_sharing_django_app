@@ -19,20 +19,12 @@ class Recipe(models.Model):
     likes = models.ManyToManyField(User, related_name='liked_recipes', blank=True)
     bookmarks = models.ManyToManyField(User, related_name='bookmarked_recipes', blank=True)
 
-    def toggle_like(self, user):
-        """Toggle like status for a user."""
-        if self.likes.filter(id=user.id).exists():
-            self.likes.remove(user)
-            return False  # Like removed
-        else:
-            self.likes.add(user)
-            return True  # Like added
-        
-    def toggle_bookmark(self, user):
-        """Toggle bookmark for a user."""
-        if self.bookmarks.filter(id=user.id).exists():
-            self.bookmarks.remove(user)
-            return False  # Like removed
-        else:
-            self.bookmarks.add(user)
-            return True  # Like added
+
+class Comment(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Comment by {self.user.full_name} on {self.recipe.title}'
