@@ -7,8 +7,8 @@ class User(AbstractUser):
     username = None
     full_name = models.CharField(max_length=200)
     email = models.EmailField(unique=True, default=None)
-    bio = models.TextField(max_length=500)
-    location = models.TextField(max_length=1000, null=True)
+    bio = models.TextField(max_length=500, blank=True)
+    location = models.TextField(max_length=1000, blank=True)
 
     objects = UserManager()
 
