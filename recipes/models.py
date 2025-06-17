@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 from django.conf import settings
 from accounts.models import User
 
@@ -7,6 +8,7 @@ class Recipe(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='recipes')
     title = models.CharField(max_length=500)
     description = models.TextField(max_length=1000, blank=True)
+    image = CloudinaryField('image', folder='recipes_images')
     prep_time = models.PositiveIntegerField()
     cook_time = models.PositiveIntegerField()
     servings = models.PositiveIntegerField()

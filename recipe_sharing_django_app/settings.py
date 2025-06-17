@@ -1,5 +1,12 @@
 
 from pathlib import Path
+import cloudinary
+
+cloudinary.config(
+    cloud_name="drttuvmie",
+    api_key="316239463715555",
+    api_secret="bDGAvp9GsrGtPr0UrDvdKawDL48"
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
 
     'accounts',
@@ -125,3 +134,12 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'drttuvmie',
+    'API_KEY': '316239463715555',
+    'API_SECRET': 'bDGAvp9GsrGtPr0UrDvdKawDL48',
+}
+
+# Set Cloudinary as the default storage for media files
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

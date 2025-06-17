@@ -22,6 +22,7 @@ def add_recipe(request):
         # Get basic recipe data
         title = request.POST.get('title')
         description = request.POST.get('description')
+        image = request.FILES.get('recipe_image')
         category = request.POST.get('category')
         prep_time = request.POST.get('prep_time')
         cook_time = request.POST.get('cook_time')
@@ -41,6 +42,7 @@ def add_recipe(request):
             user=request.user,
             title=title,
             description=description,
+            image=image,
             prep_time=prep_time,
             cook_time=cook_time,
             servings=servings,
@@ -50,7 +52,8 @@ def add_recipe(request):
             ingredients=ingredients,
             instructions=instructions
         )
-        
+
+
         return redirect('recipe_detail', id=recipe.id)
 
     return render(request, 'recipes/add_recipe.html')

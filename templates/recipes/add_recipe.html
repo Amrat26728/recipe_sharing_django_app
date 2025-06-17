@@ -13,7 +13,7 @@
 
             <!-- Recipe Form -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <form id="recipeForm" method="POST">
+                <form id="recipeForm" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <!-- Recipe Title -->
                     <div class="mb-6">
@@ -40,23 +40,16 @@
 
                     <!-- Recipe Image -->
                     <div class="mb-6">
-                        <label
-                            class="block text-md font-medium text-gray-700 mb-2">Recipe
-                            Image*</label>
+                        <label class="block text-md font-medium text-gray-700 mb-2">Recipe Image*</label>
                         <div class="flex items-center justify-center w-full">
-                            <label for="recipeImage"
-                                class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                <div
-                                    class="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <i
-                                        class="fas fa-camera text-3xl text-gray-400 mb-2"></i>
-                                    <p class="mb-2 text-sm text-gray-500">Click
-                                        to upload or drag and drop</p>
-                                    <p class="text-xs text-gray-500">JPG, PNG
-                                        (Max 2MB)</p>
+                            <label for="recipeImage" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6" id="uploadArea">
+                                    <i class="fas fa-camera text-3xl text-gray-400 mb-2"></i>
+                                    <p class="mb-2 text-sm text-gray-500">Click to upload or drag and drop</p>
+                                    <p class="text-xs text-gray-500">JPG, PNG (Max 2MB)</p>
                                 </div>
-                                <input id="recipeImage" type="file"
-                                    class="hidden" accept="image/*">
+                                <div id="fileNameDisplay" class="hidden pb-4 text-sm text-gray-700 font-medium"></div>
+                                <input name="recipe_image" id="recipeImage" type="file" class="hidden" accept="image/*">
                             </label>
                         </div>
                     </div>
@@ -263,6 +256,7 @@
         </div>
 
         <script>
+
         // Dynamic ingredient addition
         document.getElementById('addIngredient').addEventListener('click', function() {
             const container = document.getElementById('ingredientsContainer');
@@ -324,6 +318,25 @@
                 });
             });
         });
+
+         document.getElementById('recipeImage').addEventListener('change', function(e) {
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const uploadArea = document.getElementById('uploadArea');
+        
+        if (this.files && this.files.length > 0) {
+            // Show the filename
+            fileNameDisplay.textContent = this.files[0].name;
+            fileNameDisplay.classList.remove('hidden');
+            
+            // Optional: Reduce the size of the upload area to make room for the filename
+            uploadArea.classList.add('pt-3', 'pb-4');
+        } else {
+            // Hide the filename if no file is selected
+            fileNameDisplay.classList.add('hidden');
+            uploadArea.classList.remove('pt-3', 'pb-4');
+        }
+    });
+
     </script>
 
 {% endblock content %}
