@@ -1,11 +1,15 @@
 
 from pathlib import Path
 import cloudinary
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 cloudinary.config(
-    cloud_name="",
-    api_key="",
-    api_secret=""
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -136,9 +140,9 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': '',
-    'API_KEY': '',
-    'API_SECRET': '',
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
 
 # Set Cloudinary as the default storage for media files
