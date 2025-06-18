@@ -9,16 +9,19 @@ from django.contrib import messages
 @login_required(login_url='login')
 def profile(request):
     if request.method == 'POST':
-        # user = User.objects.get(id=request.user.id)
         try:
             full_name = request.POST.get('fullName')
             bio = request.POST.get('bio')
             location = request.POST.get('location')
-            User.objects.filter(id=request.user.id).update(
-                full_name = full_name,
-                bio = bio,
-                location = location
-            )
+            profile_image = request.FILES.get('profile_image')
+            user = User.objects.get(id=request.user.id)
+            
+            user.full_name = full_name
+            user.bio = bio
+            user.location = location
+            if profile_image:
+                user.profile_image = profile_image
+            user.save()
             
             messages.success(request, 'Updated successfully!')
             return redirect('profile')
