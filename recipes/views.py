@@ -8,7 +8,7 @@ from django.contrib import messages
 # Create your views here.
 def recipes(request):
     if not request.user.is_authenticated:
-        recipes = Recipe.objects.all().select_related('user')
+        recipes = Recipe.objects.select_related('user')
         return render(request, 'recipes/home.html', {'recipes': recipes})
 
     # fetches recipes of other users and also fetches user data too with just one query
@@ -112,17 +112,14 @@ def delete_recipe(request, recipe_id):
 @login_required(login_url='login')
 def add_comment(request, recipe_id):
     if request.method == 'POST':
-        print('before adding comment')
         comment = request.POST.get('comment')
         if comment:
-            print('inside if and before adding comment')
             recipe = Recipe.objects.get(id=recipe_id)
             Comment.objects.create(
                 recipe=recipe,
                 user=request.user,
                 comment=comment
             )
-            print('after adding comment')
             messages.success(request, "Comment added.")
             return redirect('recipe_detail', id=recipe_id)
         else:

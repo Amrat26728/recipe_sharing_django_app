@@ -52,7 +52,6 @@ def signup_view(request):
             full_name=full_name,
             bio=""
         )
-        user.save()
         login(request, user)
         return redirect('recipes')
 

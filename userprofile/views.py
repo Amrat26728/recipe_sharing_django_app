@@ -32,7 +32,7 @@ def profile(request):
     recipes = Recipe.objects.filter(user=request.user).prefetch_related(
         'likes',
         'bookmarks'
-    ).select_related('user').all()
+    )
     liked_recipes = Recipe.objects.filter(likes=request.user)
     bookmarked_recipes = Recipe.objects.filter(bookmarks=request.user)
 
@@ -40,9 +40,7 @@ def profile(request):
 
 
 def public_profile(request, id):
-    # fetches only one user
     user = User.objects.get(id=id)
-    # countes the recipes of user, does not fetches recipes data
     recipes = Recipe.objects.filter(user = user)
     no_of_recipes = recipes.count()
     return render(request, 'userprofile/public_profile.html', {'user': user, 'recipes': recipes, 'no_of_recipes': no_of_recipes})

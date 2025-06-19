@@ -235,7 +235,7 @@
         {% for comment in comments %}
         <div class="border-b border-gray-200 pb-6">
           <div class="flex items-start">
-            <img src="https://avatar.iran.liara.run/public/8" alt="Reviewer" class="w-10 h-10 rounded-full mr-4" />
+            <img src="{{comment.user.profile_image.url}}" alt="Reviewer" class="w-10 h-10 rounded-full mr-4" />
             <div class="flex-1">
               <div class="flex items-center justify-between mb-2">
                 <h4 class="font-semibold text-gray-900">{{comment.user.full_name}}</h4>
