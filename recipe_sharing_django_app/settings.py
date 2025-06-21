@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.staticfiles',
 
+    'tailwind',
+    'theme',
+
     'accounts',
     'userprofile',
     'recipes',
@@ -50,6 +53,9 @@ INSTALLED_APPS = [
     # other apps
     # 'django_htmx',  # doet not working properly
 ]
+
+TAILWIND_APP_NAME = 'theme'
+NPM_BIN_PATH = 'C:\\Program Files\\nodejs\\npm.cmd'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

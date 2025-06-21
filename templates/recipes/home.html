@@ -42,13 +42,13 @@
     }
   </style>
 
-  {% include "components/hero_section.html" %}
+  {% include 'components/hero_section.html' %}
 
   <div class="container max-w-7xl mx-auto px-4 py-8 px-4 sm:px-6 lg:px-8" id="recipes">
     <h1 class="text-3xl text-center font-bold text-gray-900 mb-2">Browse Recipes</h1>
     <p class="text-gray-600 mb-6 text-center">Discover amazing recipes shared by our community</p>
     <!-- Search and Filter Bar -->
-    <div class="bg-white rounded-lg shadow-sm mb-6">
+    <div class="rounded-lg mb-6">
       <div class="flex flex-col md:flex-row gap-4">
         <!-- Search Input -->
         <div class="flex-1">
@@ -89,17 +89,8 @@
           </div>
         </div>
 
-        <!-- Rating Filter -->
-        <div class="w-full md:w-40">
-          <select id="ratingFilter" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none bg-white">
-            <option value="0">Any Rating</option>
-            <option value="4">4+ Stars</option>
-            <option value="4.5">4.5+ Stars</option>
-            <option value="5">5 Stars</option>
-          </select>
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-            <i class="fas fa-chevron-down text-xs"></i>
-          </div>
+        <div>
+          <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center">Apply</button>
         </div>
       </div>
     </div>
@@ -190,7 +181,7 @@
     
         const recipeId = bookmarkBtn.dataset.recipeId
         const bookmarkIcon = bookmarkBtn.querySelector('i')
-        const isBookmarked= bookmarkBtn.classList.contains('bookmarked')
+        const isBookmarked = bookmarkBtn.classList.contains('bookmarked')
     
         // 1. Immediate UI update (optimistic)
         bookmarkBtn.classList.toggle('bookmarked')
@@ -219,7 +210,8 @@
             }
             // window.location.href = '/accounts/login/?next=' + window.location.pathname;
             return response.json()
-          }).catch((error) => {
+          })
+          .catch((error) => {
             bookmarkBtn.classList.toggle('bookmark')
             bookmarkIcon.classList.toggle('far')
             bookmarkIcon.classList.toggle('fas')

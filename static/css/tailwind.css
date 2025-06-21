@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #FF6B00;
+  --primary-light: #FF8C42;
+  --primary-dark: #E05E00;
+  --secondary: #FF9500;
+  --secondary-light: #FFAA33;
+  --secondary-dark: #E08500;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[var(--primary)] text-white px-4 py-2 rounded hover:bg-[var(--primary-dark)];
+  }
+  
+  .text-primary {
+    @apply text-[var(--primary)];
+  }
+  
+  .bg-primary {
+    background-color: var(--primary);
+  }
+}
