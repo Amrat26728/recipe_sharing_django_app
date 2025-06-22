@@ -31,12 +31,31 @@
               <p class="text-gray-600">{{ user.email }}</p>
             </div>
           </div>
+          <div class="flex flex-wrap justify-start md:justify-start gap-4 mb-4">
+            <div class="text-center">
+              <div class="text-xl font-bold text-primary">{{ no_of_recipes }}</div>
+              <div class="text-sm text-gray-600">Recipes</div>
+            </div>
+            <div class="text-center">
+              <div class="text-xl font-bold text-primary">{{ user.followers.count }}</div>
+              <div class="text-sm text-gray-600">Followers</div>
+            </div>
+            <div class="text-center">
+              <div class="text-xl font-bold text-primary">{{ user.following.count }}</div>
+              <div class="text-sm text-gray-600">Following</div>
+            </div>
+          </div>
+
           <p class="text-gray-700 max-w-2xl">{{ user.bio }}</p>
           <p class="text-gray-700 max-w-2xl">Location: {{ user.location }}</p>
-          <div class="text-center flex mt-2 items-center">
-            <div class="text-sm font-bold text-gray-600">Recipes Shared: </div>
-            <div class="ml-2 text-lg font-bold text-primary">{{ no_of_recipes }}</div>
-          </div>
+          <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="px-6 py-2 mt-2 cursor-pointer bg-primary border border-gray-300 text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center">{% if is_following %}
+                Unfollow
+              {% else %}
+                Follow
+              {% endif %}</button>
+          </form>
         </div>
       </div>
     </div>
@@ -47,7 +66,7 @@
       {% for recipe in recipes %}
         <div class="bg-white rounded-lg overflow-hidden shadow-md">
           <div class="relative">
-            <img src="{{recipe.image.url}}" alt="{{recipe.title}}" class="w-full h-48 object-cover" />
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="w-full h-48 object-cover" />
             <span class="absolute top-2 left-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">{{ recipe.category }}</span>
           </div>
           <div class="p-4">
@@ -64,15 +83,27 @@
                       
                       
                       
+                      
+                      
+                      
               fas
+
+
+
 
 
 
                     {% else %}
                       
                       
+                      
+                      
+                      
                                                  
               far
+
+
+
 
 
 
@@ -87,16 +118,28 @@
                   <i class="{% if request.user in recipe.bookmarks.all %}
                       
                       
+                      
+                      
+                      
                            
               fas
+
+
+
 
 
 
                     {% else %}
                       
                       
+                      
+                      
+                      
                            
               far
+
+
+
 
 
 
@@ -157,7 +200,6 @@
               likeCountEl.textContent = currentCount
               throw new Error('Like update failed')
             }
-            //window.location.href = '/accounts/login/?next=' + window.location.pathname;
             return response.json()
           })
           .then((data) => {
@@ -212,7 +254,6 @@
               bookmarkBtn.classList.toggle('bookmarked')
               throw new Error('Bookmark update failed')
             }
-            // window.location.href = '/accounts/login/?next=' + window.location.pathname
             return response.json()
           })
           .catch((error) => {

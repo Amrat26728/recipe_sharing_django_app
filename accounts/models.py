@@ -11,6 +11,11 @@ class User(AbstractUser):
     profile_image = CloudinaryField('image', folder='profile_images')
     bio = models.TextField(max_length=500, blank=True)
     location = models.TextField(max_length=1000, blank=True)
+    following = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='followers'
+    )
     
     objects = UserManager()
 

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe
 from accounts.models import User
 from django.contrib import messages
+from django.urls import reverse
 
 # Create your views here.
 @login_required(login_url='login')
@@ -40,9 +41,25 @@ def profile(request):
 
 
 def public_profile(request, id):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            user = User.objects.get(id=id)
+            if request.user.following.filter(id=user.id).exists():
+                request.user.following.remove(user)
+                is_following = False
+            else:
+                request.user.following.add(user)
+                is_following = True
+            return redirect('public_profile', id=id)
+            
+        else:
+            return redirect('login')
+
+
     user = User.objects.get(id=id)
     recipes = Recipe.objects.filter(user = user)
     no_of_recipes = recipes.count()
-    return render(request, 'userprofile/public_profile.html', {'user': user, 'recipes': recipes, 'no_of_recipes': no_of_recipes})
-
-
+    is_following = False
+    if request.user.following.filter(id=user.id).exists():
+        is_following = True
+    return render(request, 'userprofile/public_profile.html', {'user': user, 'recipes': recipes, 'no_of_recipes': no_of_recipes, 'is_following': is_following})

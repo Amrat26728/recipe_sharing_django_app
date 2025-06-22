@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Recipe, Comment
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core import exceptions
 from django.contrib import messages
 
@@ -59,11 +59,13 @@ def add_recipe(request):
     return render(request, 'recipes/add_recipe.html')
 
 def recipe_detail(request, id):
+    try:
+        recipe = Recipe.objects.get(id=id)
+        comments = Comment.objects.filter(recipe=recipe).prefetch_related('user')
 
-    recipe = Recipe.objects.get(id=id)
-    comments = Comment.objects.filter(recipe=recipe).prefetch_related('user')
-
-    return render(request, 'recipes/recipe_detail.html', {'recipe': recipe, 'user': recipe.user.full_name, 'comments': comments})
+        return render(request, 'recipes/recipe_detail.html', {'recipe': recipe, 'user': recipe.user.full_name, 'comments': comments})
+    except Exception as e:
+       return HttpResponse('Recipe id={} does not exist.'.format(id))
 
 
 @login_required(login_url='login')
