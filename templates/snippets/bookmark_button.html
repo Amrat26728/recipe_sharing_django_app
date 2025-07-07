@@ -1,0 +1,12 @@
+<div>
+    <button class="p-2 bookmark-btn {% if request.user in recipe.bookmarks.all %}bookmarked{% endif %}" hx-get="{% url "toggle_bookmark" recipe.id %}" hx-target="closest div" hx-swap="outerHTML">
+        <i class="{% if request.user in recipe.bookmarks.all %}
+              fas
+          {% else %}
+              far
+          {% endif %} fa-bookmark"
+          style="{% if request.user in recipe.bookmarks.all %}color: #FF6B00;{% endif %}">
+
+        </i>
+      </button>
+</div>

@@ -78,10 +78,7 @@ def toggle_like(request, recipe_id):
         recipe.likes.add(request.user)
         liked = True
         
-    return JsonResponse({
-        'liked': liked,
-        'total_likes': recipe.likes.count()
-    })
+    return render(request, 'snippets/like_button.html', {'recipe': recipe})
 
 
 @login_required(login_url='login')
@@ -94,9 +91,7 @@ def toggle_bookmark(request, recipe_id):
         recipe.bookmarks.add(request.user)
         bookmarked = True
     
-    return JsonResponse({
-        'bookmarked': bookmarked,
-    })
+    return render(request, 'snippets/bookmark_button.html', {'recipe': recipe})
 
 @login_required(login_url='login')
 def delete_recipe(request, recipe_id):

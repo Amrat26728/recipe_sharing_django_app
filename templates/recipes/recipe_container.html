@@ -56,44 +56,23 @@
   <div class="flex justify-between items-center mt-3 pt-3">
     <div class="flex">
       {% comment %}like button{% endcomment %}
-      <button class="p-2 like-btn {% if request.user in recipe.likes.all %}liked{% endif %}" data-recipe-id="{{ recipe.id }}">
+      {% comment %} <button class="p-2 like-btn {% if request.user in recipe.likes.all %}liked{% endif %}" data-recipe-id="{{ recipe.id }}">
         <i class="{% if request.user in recipe.likes.all %}
-            
-              
               fas
-
-
           {% else %}
-            
-              
               far
-
-
           {% endif %} fa-heart"
           style="{% if request.user in recipe.likes.all %}color: red;{% endif %}">
 
         </i>
         <span class="like-count">{{ recipe.likes.count }}</span>
-      </button>
+      </button> {% endcomment %}
+
+      {% include "snippets/like_button.html" %}
+
+
       {% comment %}bookmark button{% endcomment %}
-      <button class="p-2 bookmark-btn {% if request.user in recipe.bookmarks.all %}bookmarked{% endif %}" data-recipe-id="{{ recipe.id }}">
-        <i class="{% if request.user in recipe.bookmarks.all %}
-            
-              
-              fas
-
-
-          {% else %}
-            
-              
-              far
-
-
-          {% endif %} fa-bookmark"
-          style="{% if request.user in recipe.bookmarks.all %}color: #FF6B00;{% endif %}">
-
-        </i>
-      </button>
+      {% include "snippets/bookmark_button.html" %}
     </div>
     <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-card bg-white rounded-lg overflow-hidden block text-blue-500 p-4">View</a>
   </div>

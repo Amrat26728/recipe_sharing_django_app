@@ -1,0 +1,13 @@
+<div>
+    <button class="p-2 like-btn {% if request.user in recipe.likes.all %}liked{% endif %}" hx-get="{% url "toggle_like" recipe.id %}" hx-target="closest div" hx-swap="outerHTML">
+        <i class="{% if request.user in recipe.likes.all %}
+              fas
+          {% else %}
+              far
+          {% endif %} fa-heart"
+          style="{% if request.user in recipe.likes.all %}color: red;{% endif %}">
+
+        </i>
+        <span class="like-count">{{ recipe.likes.count }}</span>
+      </button>
+</div>

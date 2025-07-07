@@ -6,7 +6,7 @@
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-6">
       <div class="relative">
         {% comment %} <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&h=500&q=80" alt="Chocolate Cake" class="w-full h-64 md:h-96 object-cover" /> {% endcomment %}
-        <img src="{{recipe.image.url}}" alt="Chocolate Cake" class="w-full h-64 md:h-96 object-cover" />
+        <img src="{{ recipe.image.url }}" alt="Chocolate Cake" class="w-full h-64 md:h-96 object-cover" />
         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
           <div class="flex justify-between items-end">
             <div>
@@ -19,52 +19,9 @@
                 <button class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30"><i class="far fa-bookmark text-xl"></i></button>
                 <button class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30"><i class="fas fa-share-alt text-xl"></i></button> {% endcomment %}
                 {% comment %}like button{% endcomment %}
-                <button class="flex items-center p-2 like-btn {% if request.user in recipe.likes.all %}liked{% endif %}" data-recipe-id="{{ recipe.id }}">
-                  <i class="mr-1 {% if request.user in recipe.likes.all %}
-                      
-                      
-                      
-                  fas
-
-
-
-                    {% else %}
-                      
-                      
-                      
-                  far
-
-
-
-                    {% endif %} fa-heart"
-                    style="{% if request.user in recipe.likes.all %}color: red;{% endif %}">
-
-                  </i>
-                  <span class="like-count">{{ recipe.likes.count }}</span>
-                </button>
+                {% include 'snippets/like_button.html' %}
                 {% comment %}bookmark button{% endcomment %}
-                <button class="p-2 bookmark-btn {% if request.user in recipe.bookmarks.all %}bookmarked{% endif %}" data-recipe-id="{{ recipe.id }}">
-                  <i class="{% if request.user in recipe.bookmarks.all %}
-                      
-                      
-                      
-                  fas
-
-
-
-                    {% else %}
-                      
-                      
-                      
-                  far
-
-
-
-                    {% endif %} fa-bookmark"
-                    style="{% if request.user in recipe.bookmarks.all %}color: #FF6B00;{% endif %}">
-
-                  </i>
-                </button>
+                {% include 'snippets/bookmark_button.html' %}
               </div>
             {% else %}
               <div class="text-white flex items-center">
@@ -224,27 +181,27 @@
     <div class="bg-white rounded-lg border border-gray-200 p-6 mt-6">
       <div class="space-y-6">
         <div class="mb-6">
-          <form action="{% url "add_comment" recipe.id %}" method="POST">
+          <form action="{% url 'add_comment' recipe.id %}" method="POST">
             <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Add Comment</label>
             <textarea name="comment" id="comment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Write review..."></textarea>
             {% csrf_token %}
             <button type="submit" id="write-comment-btn" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200">Comment</button>
           </form>
         </div>
-        <h2 class="text-xl font-semibold text-gray-900">Comments ({{comments.count}})</h2>
+        <h2 class="text-xl font-semibold text-gray-900">Comments ({{ comments.count }})</h2>
         {% for comment in comments %}
-        <div class="border-b border-gray-200 pb-6">
-          <div class="flex items-start">
-            <img src="{{comment.user.profile_image.url}}" alt="Reviewer" class="w-10 h-10 rounded-full mr-4" />
-            <div class="flex-1">
-              <div class="flex items-center justify-between mb-2">
-                <h4 class="font-semibold text-gray-900">{{comment.user.full_name}}</h4>
-                <span class="text-sm text-gray-500">{{comment.created_at}}</span>
+          <div class="border-b border-gray-200 pb-6">
+            <div class="flex items-start">
+              <img src="{{ comment.user.profile_image.url }}" alt="Reviewer" class="w-10 h-10 rounded-full mr-4" />
+              <div class="flex-1">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-semibold text-gray-900">{{ comment.user.full_name }}</h4>
+                  <span class="text-sm text-gray-500">{{ comment.created_at }}</span>
+                </div>
+                <p class="text-gray-700">{{ comment.comment }}</p>
               </div>
-              <p class="text-gray-700">{{comment.comment}}</p>
             </div>
           </div>
-        </div>
         {% endfor %}
       </div>
 
@@ -253,116 +210,4 @@
       </div> {% endcomment %}
     </div>
   </div>
-
-  <script>
-    // like button toggle  AJAX
-    document.addEventListener('DOMContentLoaded', function () {
-      // Event delegation for the entire grid
-      document.querySelector('.container').addEventListener('click', function (e) {
-        // Find the closest like button (works even if clicking the heart or count)
-        const likeBtn = e.target.closest('.like-btn')
-        if (!likeBtn) return
-    
-        const recipeId = likeBtn.dataset.recipeId
-        const likeCountEl = likeBtn.querySelector('.like-count')
-        const bookmarkIcon = likeBtn.querySelector('i')
-        const currentCount = parseInt(likeCountEl.textContent)
-        const isLiked = likeBtn.classList.contains('liked')
-    
-        // 1. Immediate UI update (optimistic)
-        likeBtn.classList.toggle('liked')
-        if (likeBtn.classList.contains('liked')) {
-          bookmarkIcon.classList.replace('far', 'fas')
-          bookmarkIcon.style.color = 'red'
-          likeCountEl.textContent = currentCount + 1
-        } else {
-          bookmarkIcon.classList.replace('fas', 'far')
-          bookmarkIcon.style.color = ''
-          likeCountEl.textContent = currentCount - 1
-        }
-    
-        // 2. Send AJAX request
-        fetch(`/toggle_like/${recipeId}/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}',
-            'Content-Type': 'application/json'
-          },
-          credentials: 'same-origin'
-        })
-          .then((response) => {
-            if (!response.ok) {
-              // Revert if error
-              likeBtn.classList.toggle('liked')
-              likeCountEl.textContent = currentCount
-              throw new Error('Like update failed')
-            }
-            //window.location.href = '/accounts/login/?next=' + window.location.pathname;
-            return response.json()
-          })
-          .then((data) => {
-            // Optional: Ensure server and client are synced
-            likeCountEl.textContent = data.total_likes
-          })
-          .catch((error) => {
-            likeBtn.classList.toggle('liked')
-            bookmarkIcon.classList.toggle('far')
-            bookmarkIcon.classList.toggle('fas')
-            bookmarkIcon.style.color = likeBtn.classList.contains('liked') ? 'red' : ''
-            likeCountEl.textContent = currentCount
-            console.error('Error:', error)
-          })
-      })
-    })
-    
-    // bookmark button toggle
-    document.addEventListener('DOMContentLoaded', function () {
-      // Event delegation for the entire grid
-      document.querySelector('.container').addEventListener('click', function (e) {
-        // Find the closest like button (works even if clicking the heart or count)
-        const bookmarkBtn = e.target.closest('.bookmark-btn')
-        if (!bookmarkBtn) return
-    
-        const recipeId = bookmarkBtn.dataset.recipeId
-        const bookmarkIcon = bookmarkBtn.querySelector('i')
-        const isBookmarked = bookmarkBtn.classList.contains('bookmarked')
-    
-        // 1. Immediate UI update (optimistic)
-        bookmarkBtn.classList.toggle('bookmarked')
-        if (bookmarkBtn.classList.contains('bookmarked')) {
-          bookmarkIcon.classList.replace('far', 'fas')
-          bookmarkIcon.style.color = '#FF6B00'
-        } else {
-          bookmarkIcon.classList.replace('fas', 'far')
-          bookmarkIcon.style.color = ''
-        }
-    
-        // 2. Send AJAX request
-        fetch(`/toggle_bookmark/${recipeId}/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}',
-            'Content-Type': 'application/json'
-          },
-          credentials: 'same-origin'
-        })
-          .then((response) => {
-            if (!response.ok) {
-              // Revert if error
-              bookmarkBtn.classList.toggle('bookmarked')
-              throw new Error('Bookmark update failed')
-            }
-            // window.location.href = '/accounts/login/?next=' + window.location.pathname
-            return response.json()
-          })
-          .catch((error) => {
-            bookmarkBtn.classList.toggle('bookmark')
-            bookmarkIcon.classList.toggle('far')
-            bookmarkIcon.classList.toggle('fas')
-            bookmarkIcon.style.color = bookmarkBtn.classList.contains('bookmarked') ? '#FF6B00' : ''
-            console.error('Error:', error)
-          })
-      })
-    })
-  </script>
 {% endblock %}
