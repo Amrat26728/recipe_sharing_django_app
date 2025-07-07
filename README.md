@@ -7,5 +7,6 @@
 - user can like/unlike, bookmark/unbookmark recipes
 - user can follow and unfollow other users
 - user can delete their own shared recipes
+- used htmx for better UX
 ## File Storage
 - For storing Profile and Recipe images, i have used Cloudinary.
